@@ -39,12 +39,19 @@ int check_win(char p) {
     return 0;
 }
 
+int check_draw() {
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            if (board[i][j] == ' ') return 0;
+    return 1;
+}
+
 int main() {
     setlocale(LC_ALL, "Russian");
     init_board();
     char player = 'X';
     int r, c;
-    for (int turn = 0; turn < 9; turn++) {
+    while (1) {
         print_board();
         while (1) {
             printf("Ход игрока %c (строка и столбец 1-3): ", player);
@@ -64,6 +71,11 @@ int main() {
         if (check_win(player)) {
             print_board();
             printf("Игрок %c победил!\n", player);
+            break;
+        }
+        if (check_draw()) {
+            print_board();
+            printf("Ничья!\n");
             break;
         }
         player = switch_player(player);
