@@ -25,25 +25,33 @@ int is_valid_move(int row, int col) {
     return 1;
 }
 
+char switch_player(char current) {
+    return (current == 'X') ? 'O' : 'X';
+}
+
 int main() {
     setlocale(LC_ALL, "Russian");
     init_board();
+    char player = 'X';
     int r, c;
-    print_board();
-    while (1) {
-        printf("Введите строку и столбец (1-3 1-3): ");
-        if (scanf("%d %d", &r, &c) != 2) {
-            while (getchar() != '\n');
-            printf("Ошибка ввода! Попробуйте снова.\n");
-            continue;
+    for (int turn = 0; turn < 9; turn++) {
+        print_board();
+        while (1) {
+            printf("Ход игрока %c (строка и столбец 1-3): ", player);
+            if (scanf("%d %d", &r, &c) != 2) {
+                while (getchar() != '\n');
+                printf("Ошибка! Введите два числа.\n");
+                continue;
+            }
+            if (is_valid_move(r - 1, c - 1)) {
+                board[r - 1][c - 1] = player;
+                break;
+            }
+            else {
+                printf("Неверный ход! Попробуйте еще раз.\n");
+            }
         }
-        if (is_valid_move(r - 1, c - 1)) {
-            board[r - 1][c - 1] = 'X';
-            break;
-        }
-        else {
-            printf("Клетка занята или вне поля! Сходите еще раз.\n");
-        }
+        player = switch_player(player);
     }
     print_board();
     return 0;
