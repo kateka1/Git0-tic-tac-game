@@ -46,39 +46,51 @@ int check_draw() {
     return 1;
 }
 
+int ask_restart() {
+    int choice;
+    printf("Сыграть еще раз? (1 - Да, 0 - Нет): ");
+    if (scanf("%d", &choice) != 1) {
+        while (getchar() != '\n');
+        return 0;
+    }
+    return choice == 1;
+}
+
 int main() {
     setlocale(LC_ALL, "Russian");
-    init_board();
-    char player = 'X';
-    int r, c;
-    while (1) {
-        print_board();
+    do {
+        init_board();
+        char player = 'X';
+        int r, c;
         while (1) {
-            printf("Ход игрока %c (строка и столбец 1-3): ", player);
-            if (scanf("%d %d", &r, &c) != 2) {
-                while (getchar() != '\n');
-                printf("Ошибка! Введите два числа.\n");
-                continue;
+            print_board();
+            while (1) {
+                printf("Ход игрока %c (строка и столбец 1-3): ", player);
+                if (scanf("%d %d", &r, &c) != 2) {
+                    while (getchar() != '\n');
+                    printf("Ошибка! Введите два числа.\n");
+                    continue;
+                }
+                if (is_valid_move(r - 1, c - 1)) {
+                    board[r - 1][c - 1] = player;
+                    break;
+                }
+                else {
+                    printf("Неверный ход! Попробуйте еще раз.\n");
+                }
             }
-            if (is_valid_move(r - 1, c - 1)) {
-                board[r - 1][c - 1] = player;
+            if (check_win(player)) {
+                print_board();
+                printf("Игрок %c победил!\n", player);
                 break;
             }
-            else {
-                printf("Неверный ход! Попробуйте еще раз.\n");
+            if (check_draw()) {
+                print_board();
+                printf("Ничья!\n");
+                break;
             }
+            player = switch_player(player);
         }
-        if (check_win(player)) {
-            print_board();
-            printf("Игрок %c победил!\n", player);
-            break;
-        }
-        if (check_draw()) {
-            print_board();
-            printf("Ничья!\n");
-            break;
-        }
-        player = switch_player(player);
-    }
+    } while (ask_restart());
     return 0;
 }
